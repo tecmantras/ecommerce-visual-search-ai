@@ -53,8 +53,8 @@ For a 64-bit x86 system (most common), use the following command:
 
 6. Create and activate a **Conda environment** for this project.
     ```sh
-    conda create --name faiss_env python=3.11.11 -y
-    conda activate faiss_env
+    conda create --name faiss_ecom python=3.11.11 -y
+    conda activate faiss_ecom
     ```
 
 ---
@@ -68,7 +68,7 @@ pip install --upgrade pip
 pip install flask flask-cors numpy pymysql boto3 torch torchvision pillow
 ```
 
-## 📌 Verify FAISS Installation:
+## 📌 Verify FAISS Installation
 
 ```sh
 python -c "import faiss; print(f'✅ FAISS Installed: Version {faiss.__version__}')"
