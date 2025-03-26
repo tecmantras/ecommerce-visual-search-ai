@@ -2,6 +2,10 @@
 
 This project enables **image-based product searches** using **FAISS** and **ResNet-50**. It indexes product images from **AWS S3** and allows users to search for similar products via a **Flask API**.
 
+### 🎥 Demo Video
+
+
+
 ## 📌 Project Overview
 
 This system is designed for **e-commerce platforms** that want to enable **image-based product search**. Users can upload an image, and the system finds **visually similar products** using **deep learning and FAISS-based indexing**.
@@ -12,7 +16,7 @@ This system is designed for **e-commerce platforms** that want to enable **image
 
 Before installing, make sure you have:
 - **Python 3.11.11**
-- **MySQL Server**
+- **MySQL for database**
 - **AWS S3 Bucket** (to store images)
 - **Conda (Miniconda/Anaconda)** for environment management
 
@@ -59,7 +63,6 @@ For a 64-bit x86 system (most common), use the following command:
 Run the following command to install FAISS and other required libraries:
 
 ```sh
-Install Required Dependencies
 conda install -c conda-forge faiss-cpu -y
 pip install --upgrade pip
 pip install flask flask-cors numpy pymysql boto3 torch torchvision pillow

@@ -28,6 +28,14 @@
             padding: 20px;
             border-bottom: 2px solid #ddd;
         }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            display: none;
+            margin-top: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -80,6 +88,8 @@
     </div>
 
     <div id="resultSection" class="hidden">
+        <h4 class="mt-4">Your Uploaded Image:</h4>
+        <img id="searchedImageResult" class="image-preview">
         <h4 class="mt-4" id="matchedProductsTitle">Matched Products:</h4>
         <div id="resultContainer" class="image-grid"></div>
     </div>
@@ -96,6 +106,13 @@
         }
 
         let file = fileInput.files[0];
+
+        // ✅ Show the searched image only when the "Search" button is clicked
+        let previewResult = document.getElementById("searchedImageResult");
+        previewResult.src = URL.createObjectURL(file);
+        previewResult.style.display = "block";
+        $("#resultSection").removeClass("hidden");
+
         let formData = new FormData();
         formData.append("image", file);
 
@@ -109,22 +126,13 @@
                 let resultContainer = $("#resultContainer");
                 resultContainer.empty();
 
-                // Check if API returned "No similar products found"
                 if (response.message && response.message === "No similar products found") {
-                    $("#resultSection").addClass("hidden");
-                    $("#matchedProductsTitle").addClass("hidden");
                     $("#noResultsMessage").removeClass("hidden");
                     return;
                 }
 
-                // If products found, show them
                 $("#noResultsMessage").addClass("hidden");
-                $("#resultSection").removeClass("hidden");
                 $("#matchedProductsTitle").removeClass("hidden");
-
-                // Ensure proper grid layout for 1 or 2 images
-                let gridTemplate = response.length === 1 ? "1fr" : response.length === 2 ? "1fr 1fr" : "repeat(auto-fit, minmax(180px, 1fr))";
-                document.getElementById("resultContainer").style.gridTemplateColumns = gridTemplate;
 
                 response.forEach(product => {
                     resultContainer.append(`
@@ -144,7 +152,7 @@
     function clearResults() {
         document.getElementById("imageUpload").value = "";
         $("#resultSection").addClass("hidden");
-        $("#matchedProductsTitle").addClass("hidden");
+        $("#searchedImageResult").hide();
         $("#resultContainer").empty();
         $("#noResultsMessage").addClass("hidden");
     }
