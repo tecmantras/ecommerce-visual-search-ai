@@ -3,6 +3,10 @@
 This project enables **image-based product searches** using **FAISS** and **ResNet-50**. It indexes product images from **AWS S3** and allows users to search for similar products via a **Flask API**.
 
 ### 🎥 Demo Video
+<video width="600" controls>
+  <source src="./assets/AI Image Search.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 
 
