@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Search</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .search-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .image-card {
+            text-align: center;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .image-card:hover {
+            transform: scale(1.05);
+        }
+        .image-card img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+        .no-results {
+            text-align: center;
+            font-size: 18px;
+            color: #777;
+            margin-top: 20px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="search-bar">
+        <h2>🔍 AI Image Search</h2>
+        <input type="file" id="imageUpload" class="form-control" style="max-width: 400px;">
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="searchImage()">Search</button>
+            <button class="btn btn-secondary" onclick="clearResults()">Clear</button>
+        </div>
+    </div>
+
+    <div id="resultSection" class="hidden">
+        <h4 class="mt-4" id="matchedProductsTitle">Matched Products:</h4>
+        <div id="resultContainer" class="image-grid"></div>
+    </div>
+
+    <p id="noResultsMessage" class="no-results hidden">No similar products found.</p>
+</div>
+
+<script>
+    function searchImage() {
+        let fileInput = document.getElementById("imageUpload");
+        if (fileInput.files.length === 0) {
+            alert("Please select an image.");
+            return;
+        }
+
+        let file = fileInput.files[0];
+        let formData = new FormData();
+        formData.append("image", file);
+
+        $.ajax({
+            url: "http://127.0.0.1:5000/search",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                let resultContainer = $("#resultContainer");
+                resultContainer.empty();
+
+                // Check if API returned "No similar products found"
+                if (response.message && response.message === "No similar products found") {
+                    $("#resultSection").addClass("hidden");
+                    $("#matchedProductsTitle").addClass("hidden");
+                    $("#noResultsMessage").removeClass("hidden");
+                    return;
+                }
+
+                // If products found, show them
+                $("#noResultsMessage").addClass("hidden");
+                $("#resultSection").removeClass("hidden");
+                $("#matchedProductsTitle").removeClass("hidden");
+
+                // Ensure proper grid layout for 1 or 2 images
+                let gridTemplate = response.length === 1 ? "1fr" : response.length === 2 ? "1fr 1fr" : "repeat(auto-fit, minmax(180px, 1fr))";
+                document.getElementById("resultContainer").style.gridTemplateColumns = gridTemplate;
+
+                response.forEach(product => {
+                    resultContainer.append(`
+                        <div class="image-card">
+                            <img src="${product.image_url}" alt="${product.name}">
+                            <p>${product.name}</p>
+                        </div>
+                    `);
+                });
+            },
+            error: function () {
+                alert("Error fetching results.");
+            }
+        });
+    }
+
+    function clearResults() {
+        document.getElementById("imageUpload").value = "";
+        $("#resultSection").addClass("hidden");
+        $("#matchedProductsTitle").addClass("hidden");
+        $("#resultContainer").empty();
+        $("#noResultsMessage").addClass("hidden");
+    }
+</script>
+
+</body>
+</html>
