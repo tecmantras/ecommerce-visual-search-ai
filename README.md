@@ -4,7 +4,7 @@ This project enables **image-based product searches** using **FAISS** and **ResN
 
 ### 🎥 Demo Video
 <video width="600" 
-   src="./assets/AI Image Search.mp4">
+   src="./assets/AI_Image_Search.mp4">
 </video>
 
 
